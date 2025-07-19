@@ -109,13 +109,8 @@ def calculate_gss(df, weights=None):
 def main():
     st.set_page_config(page_title="Grazing Suitability Checker", layout="wide")
     st.title("🌾 Grazing Suitability Score (GSS) Calculator with AI Suggestions")
-    st.markdown(
-        "Upload a CSV or Excel file containing columns: `Plot_ID`, `available_biomass`, `shrub_percent`, `grazing_pressure`, `woody_count` "
-        "to get GSS, Diagnosis, and GPT-powered AI Suggestions for each plot."
-    )
-
-    uploaded_file = st.file_uploader("Choose file", type=["csv", "xlsx"])
-
+    st.sidebar.header("Upload Your Data")
+    uploaded_file = st.sidebar.file_uploader("Choose a CSV or Excel file", type=["csv", "xlsx"])
     if uploaded_file is not None:
         try:
             if uploaded_file.name.endswith(".csv"):
@@ -152,10 +147,19 @@ def main():
                         mime='text/csv'
                     )
 
-                    st.subheader("📈 GSS Distribution")
+                    st.subheader("📈 Grazing Suitability Score Distribution")
                     st.bar_chart(result['GSS'])
+                    st.subheader("Top and Bottom Plots by GSS")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.markdown("#### Top 5 Plots")
+                        st.dataframe(df.sort_values('GSS', ascending=False).head(5))
+                    with col2:
+                        st.markdown("#### Bottom 5 Plots")
+                        st.dataframe(df.sort_values('GSS', ascending=True).head(5))
+                    
     else:
         st.info("📂 Upload a CSV or Excel file to begin.")
-
+        st.markdown("Required columns: `Plot Name`, `grazing_pressure`, `Shrub %`, `total woody count`, `available_biomass`.")
 if __name__ == "__main__":
     main()
