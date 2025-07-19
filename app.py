@@ -105,8 +105,7 @@ def calculate_gss(df, weights=None):
         st.dataframe(df[['available_biomass', 'Shrub %', 'grazing_pressure', 'total woody count']].head())
         return pd.DataFrame()
 
-# --- Streamlit App ---
-def main():
+# --- Streamlit App
     st.set_page_config(page_title="Grazing Suitability Checker", layout="wide")
     st.title("🌾 Grazing Suitability Score (GSS) Calculator with AI Suggestions")
     st.sidebar.header("Upload Your Data")
