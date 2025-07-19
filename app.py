@@ -1,12 +1,12 @@
 import streamlit as st
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-import openai
+from openai import OpenAI
 import os
 import traceback
 
 # --- GPT Suggestion Function ---
-openai.api_key = st.secrets["OPENAI_API_KEY"] if "OPENAI_API_KEY" in st.secrets else os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"]) if "OPENAI_API_KEY" in st.secrets else os.getenv("OPENAI_API_KEY")
 
 def generate_ai_suggestion(diagnosis, biomass, shrub, grazing, woody):
     prompt = f"""
@@ -20,17 +20,18 @@ def generate_ai_suggestion(diagnosis, biomass, shrub, grazing, woody):
     Suggest a specific, practical solution that a rangeland manager or farmer can apply to improve this plot.
     """
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=100,
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",  # or "gpt-4"
+            messages=[
+                {"role": "system", "content": "You are an expert in rangeland management."},
+                {"role": "user", "content": prompt}
+            ],
             temperature=0.7,
+            max_tokens=150
         )
-        suggestion = response['choices'][0]['message']['content'].strip()
-        return suggestion
+        return response.choices[0].message.content.strip()
     except Exception as e:
-        return f"Error getting suggestion: {e}"
-
+        return f"⚠️ Error getting suggestion: {e}"
 # --- Helper Functions ---
 def calculate_gss(df, weights=None):
     try:
