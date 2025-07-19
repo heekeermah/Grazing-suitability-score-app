@@ -106,6 +106,7 @@ def calculate_gss(df, weights=None):
         return pd.DataFrame()
 
 # --- Streamlit App
+def main():
     st.set_page_config(page_title="Grazing Suitability Checker", layout="wide")
     st.title("🌾 Grazing Suitability Score (GSS) Calculator with AI Suggestions")
     st.sidebar.header("Upload Your Data")
@@ -152,12 +153,14 @@ def calculate_gss(df, weights=None):
                     col1, col2 = st.columns(2)
                     with col1:
                         st.markdown("#### Top 5 Plots")
-                        st.dataframe(df.sort_values('GSS', ascending=False).head(5))
+                        st.dataframe(result.sort_values('GSS', ascending=False).head(5))
                     with col2:
                         st.markdown("#### Bottom 5 Plots")
-                        st.dataframe(df.sort_values('GSS', ascending=True).head(5))
+                        st.dataframe(result.sort_values('GSS', ascending=True).head(5))
                     
     else:
         st.info("📂 Upload a CSV or Excel file to begin.")
         st.markdown("Required columns: `Plot Name`, `grazing_pressure`, `Shrub %`, `total woody count`, `available_biomass`.")
 
+if __name__ == "__main__":
+    main()
