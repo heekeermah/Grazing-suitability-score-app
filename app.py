@@ -161,5 +161,4 @@ def main():
     else:
         st.info("📂 Upload a CSV or Excel file to begin.")
         st.markdown("Required columns: `Plot Name`, `grazing_pressure`, `Shrub %`, `total woody count`, `available_biomass`.")
-if __name__ == "__main__":
-    main()
+
